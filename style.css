@@ -11,8 +11,8 @@ body {
 
 .frame {
   display: none;
-  width: 390px;
-  height: 844px;
+  width: 1080px;
+  height: 2400px;
   flex-direction: column;
   align-items: center;
   position: relative;
@@ -182,4 +182,5 @@ body {
   transform: scale(1.15);
   filter: brightness(1.2);
 }
+
 
