@@ -39,12 +39,12 @@ startBtn.onclick = () => {
   loadSong(currentIndex);
 };
 
-// MENU MUSIC — FRAME 1 ONLY (mobile-safe)
-startBtn.addEventListener("pointerdown", () => {
+// MENU MUSIC — FRAME 1 ONLY
+document.addEventListener("pointerdown", () => {
   if (frame1.style.display !== "none") {
     menuAudio.play().catch(() => {});
   }
-});
+}, { once: true });
 
 // PLAYER
 function loadSong(index) {
@@ -97,4 +97,5 @@ function formatTime(sec) {
   const s = Math.floor(sec % 60).toString().padStart(2, "0");
   return `${m}:${s}`;
 }
+
 
