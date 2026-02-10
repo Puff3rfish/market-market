@@ -12,8 +12,17 @@ startBtn.addEventListener("mouseout", () => {
   startBtn.src = "assets/images/ui/button-hover 1.png";
 });
 startBtn.addEventListener("click", () => {
+  // Stop menu audio when leaving Frame 1
+  if (menuAudio) {
+    menuAudio.pause();
+    menuAudio.currentTime = 0;
+  }
+
+  // Switch to Frame 2
   frame1.style.display = "none";
   frame2.style.display = "flex";
+
+  // Load the current song
   loadSong(currentIndex);
 });
 
@@ -51,9 +60,31 @@ const canvas = document.getElementById("flowerCanvas");
 const ctx = canvas.getContext("2d");
 const playBtn = document.getElementById("playBtn");
 
+// Menu audio for Frame 1
+const menuAudio = document.getElementById("menuAudio");
+let menuAudioUserGestureInitiated = false;
+
+// ==============================
+// FRAME 1 MENU AUDIO PLAYBACK
+// ==============================
+function tryPlayMenuAudioOnUserGesture() {
+  if (!menuAudioUserGestureInitiated && window.getComputedStyle(frame1).display !== "none") {
+    menuAudio.play().finally(() => {
+      menuAudioUserGestureInitiated = true;
+    });
+  }
+}
+
+// Listen for first user gesture (any click or key press)
+document.addEventListener('pointerdown', tryPlayMenuAudioOnUserGesture, { once: true });
+document.addEventListener('keydown', tryPlayMenuAudioOnUserGesture, { once: true });
+
+// ==============================
 // SONG TEXT ELEMENTS
+// ==============================
 const songTitle = document.getElementById("songTitle");
 const songArtist = document.getElementById("songArtist");
+
 // PROGRESS BAR ELEMENTS
 const progressBar = document.getElementById("progressBar");
 const currentTimeEl = document.getElementById("currentTime");
@@ -86,7 +117,6 @@ if (progressBar) {
     if (!audio.duration || !isFinite(audio.duration)) return;
     const val = Number(e.target.value);
     audio.currentTime = (val / 100) * audio.duration;
-    // Sync draw progress
     drawProgress = Math.min(audio.currentTime / (audio.duration * DRAW_DURATION_MULTIPLIER), 1);
     if (currentFlowerType && !isDrawing && !audio.paused) {
       isDrawing = true;
@@ -117,8 +147,7 @@ function playSong() {
   audio.play();
   playBtn.src = "assets/images/ui/pause.png";
   playBtn.onclick = pauseSong;
-  
-  // Start or resume drawing animation
+
   if (currentFlowerType && !isDrawing) {
     isDrawing = true;
     animateFlower();
@@ -150,10 +179,10 @@ let currentFlowerType = null;
 let drawProgress = 0;
 let isDrawing = false;
 let animationFrameId = null;
-const DRAW_DURATION_MULTIPLIER = 2.5; // Drawing takes 2.5x the song duration (slower)
+const DRAW_DURATION_MULTIPLIER = 2.5;
 
 // ==============================
-// TURTLE SYSTEM (PYTHON-STYLE)
+// TURTLE SYSTEM
 // ==============================
 let turtleX = 0;
 let turtleY = 0;
@@ -191,18 +220,12 @@ function circle(radius, extent) {
 // ANIMATION RENDERER
 // ==============================
 function animateFlower() {
-  // Pause animation if audio is paused
-  if (audio.paused) {
-    return;
-  }
-
-  // Wait for audio duration to be available
+  if (audio.paused) return;
   if (!audio.duration || audio.duration === Infinity) {
     animationFrameId = requestAnimationFrame(animateFlower);
     return;
   }
 
-  // Calculate progress based on song playback position
   const totalDrawTime = audio.duration * DRAW_DURATION_MULTIPLIER;
   const elapsedDrawTime = audio.currentTime;
   drawProgress = Math.min(elapsedDrawTime / totalDrawTime, 1);
@@ -217,7 +240,6 @@ function animateFlower() {
 
   ctx.restore();
 
-  // Request next frame
   animationFrameId = requestAnimationFrame(animateFlower);
 }
 
@@ -225,18 +247,12 @@ function animateFlower() {
 // FLOWER ROUTER
 // ==============================
 function drawFlower(type) {
-  // Stop any existing animation
-  if (animationFrameId) {
-    cancelAnimationFrame(animationFrameId);
-  }
-
-  // Clear canvas
+  if (animationFrameId) cancelAnimationFrame(animationFrameId);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   currentFlowerType = type;
   drawProgress = 0;
   isDrawing = false;
-  // Animation starts when playSong() is called
 }
 
 // ==============================
