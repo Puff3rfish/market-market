@@ -1,3 +1,4 @@
+
 body {
   margin: 0;
   background: black;
@@ -10,9 +11,8 @@ body {
 
 .frame {
   display: none;
-  width: 100%;       /* Full width of the screen */
-  max-width: 420px;  /* Optional: limit width for very large screens */
-  height: 100vh;     /* Full height of viewport */
+  width: 390px;
+  height: 844px;
   flex-direction: column;
   align-items: center;
   position: relative;
@@ -27,14 +27,12 @@ body {
 }
 
 .dog {
-  width: 40%;        /* Relative width */
-  max-width: 160px;  /* Keep it from getting too large */
-  margin-bottom: 5%;
+  width: 160px;
+  margin-bottom: 20px;
 }
 
 .start-btn {
-  width: 45%;        /* Relative width */
-  max-width: 180px;
+  width: 180px;
   cursor: pointer;
   transition: transform 0.2s ease;
 }
@@ -43,12 +41,12 @@ body {
   transform: scale(1.08);
 }
 
+/* Vinyl image on Frame 1 */
 .vinyl {
-  width: 80%;        /* Make vinyl responsive */
-  max-width: 344px;
-  height: auto;
+  width: 344px;
+  height: 165px;
   position: absolute;
-  top: 8%;
+  top: 60px;
   left: 50%;
   transform: translateX(-50%);
   display: block;
@@ -58,35 +56,124 @@ body {
 #frame2 {
   background: #29444B;
   justify-content: flex-start;
-  padding-top: 5%;
-  width: 100%;
-  max-width: 420px;
-  height: 100vh;
+  padding-top: 40px;
 }
 
-/* Flower canvas responsive */
+/* FRAME 1 - VINYL + NOW PLAYING */
+.vinyl-container {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.vinyl-bg {
+  width: 260px;
+  height: 260px;
+  object-fit: contain;
+  display: block;
+}
+.vinyl-plate {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: transform 0.3s linear;
+}
+.vinyl-plate.spinning {
+  animation: spin 4s linear infinite;
+}
+@keyframes spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.now-playing {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  color: white;
+  font-family: Consolas, monospace;
+}
+.now-label {
+  font-size: 12px;
+  opacity: 0.9;
+  margin-bottom: 2px;
+}
+.track-line.small {
+  font-size: 13px;
+  font-weight: 400;
+}
+.track-line.bold {
+  font-size: 15px;
+  font-weight: 700;
+}
+
 #flowerCanvas {
   background: #6596c7;
   border-radius: 25px;
-  margin: 5% auto;
-  width: 85%;      /* Scales with screen width */
-  max-width: 344px; /* Maintain maximum width */
-  height: auto;
-  aspect-ratio: 344 / 498; /* Keeps correct ratio */
+  margin-top: 50px;   /* 🔼 move DOWN */
+  margin-bottom: 10px; /* 🔽 move UP */
 }
 
-/* Controls */
-.controls {
-  margin-top: 5%;
+
+/* 🎵 SONG INFO */
+.song-info {
+  width: 85%;
+  margin-top: 18px;
+  text-align: center;
+  color: white;
+  font-family: Consolas, monospace;
+}
+
+.song-title {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.song-artist {
+  font-size: 13px;
+  opacity: 0.85;
+  margin-bottom: 10px;
+}
+
+.progress-container {
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+#progressBar {
+  flex: 1;
+  appearance: none;
+  height: 4px;
+  background: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#progressBar::-webkit-slider-thumb {
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+}
+
+/* CONTROLS */
+.controls {
+  margin-top: 25px;
 }
 
 .control-btn {
-  width: 12%;          /* relative to screen */
-  max-width: 60px;
-  margin: 2%;
+  width: 60px;
+  margin: 10px;
   cursor: pointer;
   transition: transform 0.2s ease, filter 0.2s ease;
 }
@@ -95,47 +182,3 @@ body {
   transform: scale(1.15);
   filter: brightness(1.2);
 }
-
-/* Song info */
-.song-info {
-  width: 85%;
-  margin-top: 2%;
-  text-align: center;
-  color: white;
-  font-family: Consolas, monospace;
-}
-
-.song-title {
-  font-weight: bold;
-  font-size: 4vw;   /* relative font size */
-}
-
-.song-artist {
-  font-size: 3vw;   /* relative font size */
-  opacity: 0.85;
-  margin-bottom: 2%;
-}
-
-.progress-container {
-  display: flex;
-  align-items: center;
-  gap: 2%;
-}
-
-#progressBar {
-  flex: 1;
-  appearance: none;
-  height: 0.4em;
-  background: white;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-#progressBar::-webkit-slider-thumb {
-  appearance: none;
-  width: 0.8em;
-  height: 0.8em;
-  background: white;
-  border-radius: 50%;
-}
-
