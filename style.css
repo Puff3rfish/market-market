@@ -15,7 +15,6 @@ html, body {
   flex-direction: column;
   align-items: center;
   position: relative;
-  overflow: hidden;
 }
 
 /* FRAME 1 */
@@ -59,7 +58,7 @@ html, body {
   padding-top: env(safe-area-inset-top);
 }
 
-/* FLOWER CANVAS — FIXED SIZE */
+/* FIXED FLOWER CANVAS */
 #flowerCanvas {
   width: 344px;
   height: 498px;
