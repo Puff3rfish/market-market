@@ -1,10 +1,47 @@
 // ==============================
-// FRAME NAVIGATION
+// ELEMENTS
 // ==============================
 const frame1 = document.getElementById("frame1");
 const frame2 = document.getElementById("frame2");
 const startBtn = document.getElementById("startBtn");
 
+const audio = document.getElementById("audioPlayer");
+const menuAudio = document.getElementById("menuAudio");
+const canvas = document.getElementById("flowerCanvas");
+const ctx = canvas.getContext("2d");
+
+const playBtn = document.getElementById("playBtn");
+const songTitle = document.getElementById("songTitle");
+const songArtist = document.getElementById("songArtist");
+const progressBar = document.getElementById("progressBar");
+const currentTimeEl = document.getElementById("currentTime");
+const durationEl = document.getElementById("duration");
+
+// ==============================
+// FRAME 1 MENU AUDIO (WORKS ON MOBILE)
+// ==============================
+let menuAudioPlayed = false;
+
+function playMenuAudio() {
+  if (menuAudioPlayed) return;
+  menuAudio.play().catch(() => {
+    console.log("Menu audio blocked on mobile. Wait for next gesture.");
+  });
+  menuAudioPlayed = true;
+}
+
+// Play menu audio on first user tap
+frame1.addEventListener('pointerdown', playMenuAudio, { once: true });
+
+// Stop menu audio
+function stopMenuAudio() {
+  menuAudio.pause();
+  menuAudio.currentTime = 0;
+}
+
+// ==============================
+// FRAME NAVIGATION
+// ==============================
 startBtn.addEventListener("mouseover", () => {
   startBtn.src = "assets/images/ui/button-hover 2.png";
 });
@@ -14,6 +51,7 @@ startBtn.addEventListener("mouseout", () => {
 startBtn.addEventListener("click", () => {
   frame1.style.display = "none";
   frame2.style.display = "flex";
+  stopMenuAudio();
   loadSong(currentIndex);
 });
 
@@ -21,44 +59,16 @@ startBtn.addEventListener("click", () => {
 // SONG DATA
 // ==============================
 const songs = [
-  {
-    title: "Panaginip",
-    artist: "Nicole",
-    file: "assets/music/panaginip.mp3",
-    flower: "carnation"
-  },
-  {
-    title: "Diary",
-    artist: "Bread",
-    file: "assets/music/diary.mp3",
-    flower: "lotus"
-  },
-  {
-    title: "Museo",
-    artist: "Eliza Maturan",
-    file: "assets/music/museo.mp3",
-    flower: "camellia"
-  }
+  { title: "Panaginip", artist: "Nicole", file: "assets/music/panaginip.mp3", flower: "carnation" },
+  { title: "Diary", artist: "Bread", file: "assets/music/diary.mp3", flower: "lotus" },
+  { title: "Museo", artist: "Eliza Maturan", file: "assets/music/museo.mp3", flower: "camellia" }
 ];
 
 let currentIndex = 0;
 
 // ==============================
-// AUDIO + CANVAS
+// SONG + PROGRESS
 // ==============================
-const audio = document.getElementById("audioPlayer");
-const canvas = document.getElementById("flowerCanvas");
-const ctx = canvas.getContext("2d");
-const playBtn = document.getElementById("playBtn");
-
-// SONG TEXT ELEMENTS
-const songTitle = document.getElementById("songTitle");
-const songArtist = document.getElementById("songArtist");
-// PROGRESS BAR ELEMENTS
-const progressBar = document.getElementById("progressBar");
-const currentTimeEl = document.getElementById("currentTime");
-const durationEl = document.getElementById("duration");
-
 function formatTime(seconds) {
   if (isNaN(seconds) || !isFinite(seconds)) return "0:00";
   const m = Math.floor(seconds / 60);
@@ -66,36 +76,29 @@ function formatTime(seconds) {
   return m + ":" + (s < 10 ? "0" + s : s);
 }
 
-// Update duration when metadata is loaded
 audio.addEventListener("loadedmetadata", () => {
   durationEl.textContent = formatTime(audio.duration);
-  if (progressBar) progressBar.value = 0;
+  progressBar.value = 0;
 });
 
-// Update progress UI as the song plays
 audio.addEventListener("timeupdate", () => {
   if (!audio.duration || !isFinite(audio.duration)) return;
   const percent = (audio.currentTime / audio.duration) * 100;
-  if (progressBar) progressBar.value = percent;
-  if (currentTimeEl) currentTimeEl.textContent = formatTime(audio.currentTime);
+  progressBar.value = percent;
+  currentTimeEl.textContent = formatTime(audio.currentTime);
 });
 
-// Seek when user interacts with the progress bar
-if (progressBar) {
-  progressBar.addEventListener("input", (e) => {
-    if (!audio.duration || !isFinite(audio.duration)) return;
-    const val = Number(e.target.value);
-    audio.currentTime = (val / 100) * audio.duration;
-    // Sync draw progress
-    drawProgress = Math.min(audio.currentTime / (audio.duration * DRAW_DURATION_MULTIPLIER), 1);
-    if (currentFlowerType && !isDrawing && !audio.paused) {
-      isDrawing = true;
-      animateFlower();
-    }
-  });
-}
+progressBar.addEventListener("input", (e) => {
+  if (!audio.duration || !isFinite(audio.duration)) return;
+  const val = Number(e.target.value);
+  audio.currentTime = (val / 100) * audio.duration;
+  drawProgress = Math.min(audio.currentTime / (audio.duration * DRAW_DURATION_MULTIPLIER), 1);
+  if (currentFlowerType && !isDrawing && !audio.paused) {
+    isDrawing = true;
+    animateFlower();
+  }
+});
 
-// Auto-advance on end
 audio.addEventListener("ended", () => {
   nextSong();
 });
@@ -105,11 +108,9 @@ audio.addEventListener("ended", () => {
 // ==============================
 function loadSong(index) {
   const song = songs[index];
-
   audio.src = song.file;
   songTitle.textContent = song.title;
   songArtist.textContent = song.artist;
-
   drawFlower(song.flower);
 }
 
@@ -117,8 +118,6 @@ function playSong() {
   audio.play();
   playBtn.src = "assets/images/ui/pause.png";
   playBtn.onclick = pauseSong;
-  
-  // Start or resume drawing animation
   if (currentFlowerType && !isDrawing) {
     isDrawing = true;
     animateFlower();
@@ -144,17 +143,14 @@ function prevSong() {
 }
 
 // ==============================
-// ANIMATION STATE
+// FLOWER ANIMATION
 // ==============================
 let currentFlowerType = null;
 let drawProgress = 0;
 let isDrawing = false;
 let animationFrameId = null;
-const DRAW_DURATION_MULTIPLIER = 2.5; // Drawing takes 2.5x the song duration (slower)
+const DRAW_DURATION_MULTIPLIER = 2.5;
 
-// ==============================
-// TURTLE SYSTEM (PYTHON-STYLE)
-// ==============================
 let turtleX = 0;
 let turtleY = 0;
 let turtleAngle = 0;
@@ -165,9 +161,7 @@ function resetTurtle() {
   turtleAngle = 0;
 }
 
-function left(deg) {
-  turtleAngle += deg * Math.PI / 180;
-}
+function left(deg) { turtleAngle += deg * Math.PI / 180; }
 
 function circle(radius, extent) {
   const steps = Math.max(12, Math.abs(extent));
@@ -183,26 +177,16 @@ function circle(radius, extent) {
     turtleY += Math.sin(turtleAngle) * stepLength;
     ctx.lineTo(turtleX, turtleY);
   }
-
   ctx.stroke();
 }
 
-// ==============================
-// ANIMATION RENDERER
-// ==============================
 function animateFlower() {
-  // Pause animation if audio is paused
-  if (audio.paused) {
-    return;
-  }
-
-  // Wait for audio duration to be available
+  if (audio.paused) return;
   if (!audio.duration || audio.duration === Infinity) {
     animationFrameId = requestAnimationFrame(animateFlower);
     return;
   }
 
-  // Calculate progress based on song playback position
   const totalDrawTime = audio.duration * DRAW_DURATION_MULTIPLIER;
   const elapsedDrawTime = audio.currentTime;
   drawProgress = Math.min(elapsedDrawTime / totalDrawTime, 1);
@@ -216,36 +200,22 @@ function animateFlower() {
   if (currentFlowerType === "camellia") drawCameliaAnimated(drawProgress);
 
   ctx.restore();
-
-  // Request next frame
   animationFrameId = requestAnimationFrame(animateFlower);
 }
 
-// ==============================
-// FLOWER ROUTER
-// ==============================
 function drawFlower(type) {
-  // Stop any existing animation
-  if (animationFrameId) {
-    cancelAnimationFrame(animationFrameId);
-  }
-
-  // Clear canvas
+  if (animationFrameId) cancelAnimationFrame(animationFrameId);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
   currentFlowerType = type;
   drawProgress = 0;
   isDrawing = false;
-  // Animation starts when playSong() is called
 }
 
-// ==============================
-// LOTUS (ANIMATED)
-// ==============================
+// ------------------------------
+// LOTUS
 function drawLotusAnimated(progress) {
   ctx.strokeStyle = "white";
   ctx.lineWidth = 1;
-
   resetTurtle();
 
   const petals = 8;
@@ -257,7 +227,6 @@ function drawLotusAnimated(progress) {
   for (let i = 0; i < layersToDrawN; i++) {
     let r = (radius - i * 0.7) * scale;
     if (r <= 0) break;
-
     for (let p = 0; p < petals; p++) {
       circle(r, 60);
       left(120);
@@ -267,13 +236,11 @@ function drawLotusAnimated(progress) {
   }
 }
 
-// ==============================
-// CARNATION (ANIMATED)
-// ==============================
+// ------------------------------
+// CARNATION
 function drawCarnationAnimated(progress) {
   ctx.strokeStyle = "pink";
   ctx.lineWidth = 1;
-
   resetTurtle();
 
   const petals = 12;
@@ -286,7 +253,6 @@ function drawCarnationAnimated(progress) {
     let wobble = Math.random() * 4 - 2;
     let r = (baseRadius - i * 0.45 + wobble) * scale;
     if (r <= 0) break;
-
     for (let p = 0; p < petals; p++) {
       circle(r, 70);
       left(110);
@@ -296,13 +262,11 @@ function drawCarnationAnimated(progress) {
   }
 }
 
-// ==============================
-// CAMELLIA (ANIMATED)
-// ==============================
+// ------------------------------
+// CAMELLIA
 function drawCameliaAnimated(progress) {
   ctx.strokeStyle = "pink";
   ctx.lineWidth = 1;
-
   resetTurtle();
 
   const petals = 7;
@@ -314,9 +278,7 @@ function drawCameliaAnimated(progress) {
   for (let i = 0; i < layersToDrawN; i++) {
     let r = (baseRadius - i * 0.6) * scale;
     if (r <= 0) break;
-
     left(i * 0.6);
-
     for (let p = 0; p < petals; p++) {
       circle(r, 80);
       left(100);
