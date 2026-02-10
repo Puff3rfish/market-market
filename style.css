@@ -1,17 +1,17 @@
-
-body {
+html, body {
   margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
   background: black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  overflow: hidden;
 }
 
+/* APP FRAME */
 .frame {
   display: none;
-  width: 390px;
-  height: 844px;
+  width: 100vw;
+  height: 100dvh;
   flex-direction: column;
   align-items: center;
   position: relative;
@@ -25,14 +25,27 @@ body {
   background: url("assets/images/strawberry-bg.png") center/cover no-repeat;
 }
 
+.vinyl {
+  width: 80vw;
+  max-width: 340px;
+  position: absolute;
+  top: 8vh;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .dog {
-  width: 160px;
-  margin-bottom: 20px;
+  width: 42vw;
+  max-width: 160px;
+  margin-top: auto;
+  margin-bottom: 3vh;
 }
 
 .start-btn {
-  width: 180px;
+  width: 48vw;
+  max-width: 180px;
   cursor: pointer;
+  margin-bottom: 8vh;
   transition: transform 0.2s ease;
 }
 
@@ -40,106 +53,40 @@ body {
   transform: scale(1.08);
 }
 
-/* Vinyl image on Frame 1 */
-.vinyl {
-  width: 344px;
-  height: 165px;
-  position: absolute;
-  top: 60px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: block;
-}
-
 /* FRAME 2 */
 #frame2 {
   background: #29444B;
-  justify-content: flex-start;
-  padding-top: 40px;
+  padding-top: env(safe-area-inset-top);
 }
 
-/* FRAME 1 - VINYL + NOW PLAYING */
-.vinyl-container {
-  position: relative;
-  width: 260px;
-  height: 260px;
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.vinyl-bg {
-  width: 260px;
-  height: 260px;
-  object-fit: contain;
-  display: block;
-}
-.vinyl-plate {
-  position: absolute;
-  width: 160px;
-  height: 160px;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  transition: transform 0.3s linear;
-}
-.vinyl-plate.spinning {
-  animation: spin 4s linear infinite;
-}
-@keyframes spin {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-.now-playing {
-  position: absolute;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  color: white;
-  font-family: Consolas, monospace;
-}
-.now-label {
-  font-size: 12px;
-  opacity: 0.9;
-  margin-bottom: 2px;
-}
-.track-line.small {
-  font-size: 13px;
-  font-weight: 400;
-}
-.track-line.bold {
-  font-size: 15px;
-  font-weight: 700;
-}
-
+/* CANVAS */
 #flowerCanvas {
+  width: 90vw;
+  max-width: 360px;
+  aspect-ratio: 344 / 498;
   background: #6596c7;
-  border-radius: 25px;
-  margin-top: 50px;   /* 🔼 move DOWN */
-  margin-bottom: 10px; /* 🔽 move UP */
+  border-radius: 24px;
+  margin-top: 5vh;
 }
 
-
-/* 🎵 SONG INFO */
+/* SONG INFO */
 .song-info {
   width: 85%;
-  margin-top: 18px;
+  margin-top: 2vh;
   text-align: center;
   color: white;
   font-family: Consolas, monospace;
 }
 
 .song-title {
+  font-size: 5vw;
   font-weight: bold;
-  font-size: 20px;
 }
 
 .song-artist {
-  font-size: 13px;
+  font-size: 3.5vw;
   opacity: 0.85;
-  margin-bottom: 10px;
+  margin-bottom: 1vh;
 }
 
 .progress-container {
@@ -150,11 +97,10 @@ body {
 
 #progressBar {
   flex: 1;
-  appearance: none;
   height: 4px;
+  appearance: none;
   background: white;
   border-radius: 5px;
-  cursor: pointer;
 }
 
 #progressBar::-webkit-slider-thumb {
@@ -167,17 +113,12 @@ body {
 
 /* CONTROLS */
 .controls {
-  margin-top: 25px;
+  margin-top: 4vh;
 }
 
 .control-btn {
-  width: 60px;
-  margin: 10px;
+  width: 14vw;
+  max-width: 60px;
+  margin: 0 10px;
   cursor: pointer;
-  transition: transform 0.2s ease, filter 0.2s ease;
-}
-
-.control-btn:hover {
-  transform: scale(1.15);
-  filter: brightness(1.2);
 }
