@@ -1,4 +1,4 @@
-// FRAME ELEMENTS
+// FRAMES
 const frame1 = document.getElementById("frame1");
 const frame2 = document.getElementById("frame2");
 const startBtn = document.getElementById("startBtn");
@@ -21,32 +21,33 @@ const durationEl = document.getElementById("duration");
 
 // SONG DATA
 const songs = [
-  { title: "Panaginip", artist: "Nicole", file: "assets/music/panaginip.mp3", flower: "carnation" },
-  { title: "Diary", artist: "Bread", file: "assets/music/diary.mp3", flower: "lotus" },
-  { title: "Museo", artist: "Eliza Maturan", file: "assets/music/museo.mp3", flower: "camellia" }
+  { title: "Panaginip", artist: "Nicole", file: "assets/music/panaginip.mp3" },
+  { title: "Diary", artist: "Bread", file: "assets/music/diary.mp3" },
+  { title: "Museo", artist: "Eliza Maturan", file: "assets/music/museo.mp3" }
 ];
 
 let currentIndex = 0;
 
-// FRAME 1 BUTTON
-startBtn.onclick = () => {
-  menuAudio.pause();
-  menuAudio.currentTime = 0;
+/* -------------------------------------------------
+   FRAME 1 → FRAME 2 (MOBILE-SAFE AUDIO HANDSHAKE)
+------------------------------------------------- */
+startBtn.addEventListener("click", () => {
+  // This line is the key for mobile browsers
+  menuAudio.play().catch(() => {});
+
+  // Stop menu music cleanly
+  setTimeout(() => {
+    menuAudio.pause();
+    menuAudio.currentTime = 0;
+  }, 150);
 
   frame1.style.display = "none";
   frame2.style.display = "flex";
 
   loadSong(currentIndex);
-};
+});
 
-// MENU MUSIC — FRAME 1 ONLY
-document.addEventListener("pointerdown", () => {
-  if (frame1.style.display !== "none") {
-    menuAudio.play().catch(() => {});
-  }
-}, { once: true });
-
-// PLAYER
+/* ---------------- PLAYER ---------------- */
 function loadSong(index) {
   const song = songs[index];
   audio.src = song.file;
@@ -78,7 +79,7 @@ function prevSong() {
   playSong();
 }
 
-// PROGRESS BAR
+/* ---------------- PROGRESS ---------------- */
 audio.addEventListener("loadedmetadata", () => {
   durationEl.textContent = formatTime(audio.duration);
 });
