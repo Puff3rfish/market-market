@@ -1,21 +1,17 @@
 
 body {
   margin: 0;
-  padding: 0;
   background: black;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100vw;
   height: 100vh;
-  min-height: 100vh;
-  overflow: hidden;
 }
 
 .frame {
   display: none;
-  width: 100%;
-  height: 100%;
+  width: 390px;
+  height: 844px;
   flex-direction: column;
   align-items: center;
   position: relative;
@@ -30,16 +26,12 @@ body {
 }
 
 .dog {
-  width: 35%;
-  max-width: 160px;
-  height: auto;
-  margin-bottom: 5%;
+  width: 160px;
+  margin-bottom: 20px;
 }
 
 .start-btn {
-  width: 40%;
-  max-width: 180px;
-  height: auto;
+  width: 180px;
   cursor: pointer;
   transition: transform 0.2s ease;
 }
@@ -50,11 +42,10 @@ body {
 
 /* Vinyl image on Frame 1 */
 .vinyl {
-  width: 85%;
-  max-width: 344px;
-  height: auto;
+  width: 344px;
+  height: 165px;
   position: absolute;
-  top: 7%;
+  top: 60px;
   left: 50%;
   transform: translateX(-50%);
   display: block;
@@ -64,7 +55,7 @@ body {
 #frame2 {
   background: #29444B;
   justify-content: flex-start;
-  padding-top: 3%;
+  padding-top: 40px;
 }
 
 /* FRAME 1 - VINYL + NOW PLAYING */
@@ -126,73 +117,62 @@ body {
 #flowerCanvas {
   background: #6596c7;
   border-radius: 25px;
-  width: 85%;
-  height: auto;
-  max-width: 95%;
-  aspect-ratio: 1;
-  margin-top: 5%;
-  margin-bottom: 2%;
+  margin-top: 50px;   /* 🔼 move DOWN */
+  margin-bottom: 10px; /* 🔽 move UP */
 }
 
 
 /* 🎵 SONG INFO */
 .song-info {
-  width: 90%;
-  max-width: 330px;
-  margin-top: 3%;
+  width: 85%;
+  margin-top: 18px;
   text-align: center;
   color: white;
   font-family: Consolas, monospace;
-  font-size: clamp(12px, 3vw, 16px);
 }
 
 .song-title {
   font-weight: bold;
-  font-size: clamp(16px, 4vw, 20px);
+  font-size: 20px;
 }
 
 .song-artist {
-  font-size: clamp(11px, 2.5vw, 13px);
+  font-size: 13px;
   opacity: 0.85;
-  margin-bottom: 2%;
+  margin-bottom: 10px;
 }
 
 .progress-container {
   display: flex;
   align-items: center;
-  gap: clamp(4px, 2vw, 8px);
-  font-size: clamp(10px, 2.5vw, 12px);
-  width: 100%;
+  gap: 8px;
 }
 
 #progressBar {
   flex: 1;
   appearance: none;
-  height: 3px;
+  height: 4px;
   background: white;
   border-radius: 5px;
   cursor: pointer;
-  min-width: 100px;
 }
 
 #progressBar::-webkit-slider-thumb {
   appearance: none;
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   background: white;
   border-radius: 50%;
 }
 
 /* CONTROLS */
 .controls {
-  margin-top: 3%;
-  margin-bottom: 2%;
+  margin-top: 25px;
 }
 
 .control-btn {
-  width: clamp(40px, 12vw, 60px);
-  height: auto;
-  margin: clamp(5px, 3vw, 10px);
+  width: 60px;
+  margin: 10px;
   cursor: pointer;
   transition: transform 0.2s ease, filter 0.2s ease;
 }
