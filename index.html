@@ -1,6 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+
+  <!-- CRITICAL: makes it behave like a mobile app -->
+  <meta name="viewport"
+        content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no">
+
   <title>dangwa</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -17,9 +23,8 @@
 
 <!-- FRAME 2 -->
 <div id="frame2" class="frame">
-  <canvas id="flowerCanvas" width="344" height="498"></canvas>
+  <canvas id="flowerCanvas"></canvas>
 
-  <!-- 🎵 SONG INFO (NEW) -->
   <div class="song-info">
     <div id="songTitle" class="song-title"></div>
     <div id="songArtist" class="song-artist"></div>
@@ -39,7 +44,11 @@
 </div>
 
 <audio id="audioPlayer" preload="auto"></audio>
-<audio id="menuAudio" src="assets/music/frame%201%20music/Love%20is%20on%20the%20Menu.mp3" preload="auto" loop></audio>
+<audio id="menuAudio"
+       src="assets/music/frame%201%20music/Love%20is%20on%20the%20Menu.mp3"
+       preload="auto"
+       loop></audio>
+
 <script src="script.js"></script>
 </body>
 </html>
