@@ -60,6 +60,18 @@ const canvas = document.getElementById("flowerCanvas");
 const ctx = canvas.getContext("2d");
 const playBtn = document.getElementById("playBtn");
 
+// Responsive canvas sizing
+function resizeCanvas() {
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.round(rect.width * dpr);
+  canvas.height = Math.round(rect.height * dpr);
+  ctx.scale(dpr, dpr);
+}
+
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
 // Menu audio for Frame 1
 const menuAudio = document.getElementById("menuAudio");
 let menuAudioUserGestureInitiated = false;
