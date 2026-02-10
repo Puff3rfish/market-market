@@ -4,7 +4,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  width: 390px;
+  height: 844px;
 }
 
 .frame {
@@ -137,3 +138,4 @@ body {
   background: white;
   border-radius: 50%;
 }
+
