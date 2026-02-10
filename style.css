@@ -38,6 +38,7 @@ html, body {
   max-width: 160px;
   margin-top: auto;
   margin-bottom: 3vh;
+  cursor: pointer;
 }
 
 .start-btn {
@@ -61,11 +62,10 @@ html, body {
   align-items: center;
 }
 
-/* FLOWER CANVAS */
+/* FIXED FLOWER CANVAS */
 #flowerCanvas {
-  width: 80vw;
-  max-width: 344px;
-  aspect-ratio: 344 / 498;
+  width: 344px;
+  height: 498px;
   background: #6596c7;
   border-radius: 24px;
   margin-top: 5vh;
