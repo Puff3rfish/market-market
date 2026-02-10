@@ -1,19 +1,25 @@
+// FRAME ELEMENTS
 const frame1 = document.getElementById("frame1");
 const frame2 = document.getElementById("frame2");
 const startBtn = document.getElementById("startBtn");
 
+// AUDIO
 const audio = document.getElementById("audioPlayer");
 const menuAudio = document.getElementById("menuAudio");
+
+// CANVAS
 const canvas = document.getElementById("flowerCanvas");
 const ctx = canvas.getContext("2d");
-const playBtn = document.getElementById("playBtn");
 
+// UI
+const playBtn = document.getElementById("playBtn");
 const songTitle = document.getElementById("songTitle");
 const songArtist = document.getElementById("songArtist");
 const progressBar = document.getElementById("progressBar");
 const currentTimeEl = document.getElementById("currentTime");
 const durationEl = document.getElementById("duration");
 
+// SONG DATA
 const songs = [
   { title: "Panaginip", artist: "Nicole", file: "assets/music/panaginip.mp3", flower: "carnation" },
   { title: "Diary", artist: "Bread", file: "assets/music/diary.mp3", flower: "lotus" },
@@ -22,19 +28,7 @@ const songs = [
 
 let currentIndex = 0;
 
-/* -------- MOBILE CANVAS RESIZE -------- */
-function resizeCanvas() {
-  const rect = canvas.getBoundingClientRect();
-  const dpr = window.devicePixelRatio || 1;
-
-  canvas.width = rect.width * dpr;
-  canvas.height = rect.height * dpr;
-
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-}
-window.addEventListener("resize", resizeCanvas);
-
-/* -------- FRAME 1 BUTTON -------- */
+// FRAME 1 BUTTON
 startBtn.onclick = () => {
   menuAudio.pause();
   menuAudio.currentTime = 0;
@@ -42,18 +36,17 @@ startBtn.onclick = () => {
   frame1.style.display = "none";
   frame2.style.display = "flex";
 
-  resizeCanvas();
   loadSong(currentIndex);
 };
 
-/* -------- MENU MUSIC (FRAME 1 ONLY) -------- */
+// MENU MUSIC — FRAME 1 ONLY
 document.addEventListener("pointerdown", () => {
   if (frame1.style.display !== "none") {
     menuAudio.play().catch(() => {});
   }
 }, { once: true });
 
-/* -------- PLAYER -------- */
+// PLAYER
 function loadSong(index) {
   const song = songs[index];
   audio.src = song.file;
@@ -85,7 +78,7 @@ function prevSong() {
   playSong();
 }
 
-/* -------- PROGRESS -------- */
+// PROGRESS BAR
 audio.addEventListener("loadedmetadata", () => {
   durationEl.textContent = formatTime(audio.duration);
 });
