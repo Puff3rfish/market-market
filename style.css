@@ -59,11 +59,10 @@ html, body {
   padding-top: env(safe-area-inset-top);
 }
 
-/* CANVAS */
+/* FLOWER CANVAS — FIXED SIZE */
 #flowerCanvas {
-  width: 90vw;
-  max-width: 360px;
-  aspect-ratio: 344 / 498;
+  width: 344px;
+  height: 498px;
   background: #6596c7;
   border-radius: 24px;
   margin-top: 5vh;
@@ -79,14 +78,14 @@ html, body {
 }
 
 .song-title {
-  font-size: 5vw;
+  font-size: 20px;
   font-weight: bold;
 }
 
 .song-artist {
-  font-size: 3.5vw;
+  font-size: 13px;
   opacity: 0.85;
-  margin-bottom: 1vh;
+  margin-bottom: 10px;
 }
 
 .progress-container {
@@ -113,12 +112,11 @@ html, body {
 
 /* CONTROLS */
 .controls {
-  margin-top: 4vh;
+  margin-top: 25px;
 }
 
 .control-btn {
-  width: 14vw;
-  max-width: 60px;
-  margin: 0 10px;
+  width: 60px;
+  margin: 10px;
   cursor: pointer;
 }
