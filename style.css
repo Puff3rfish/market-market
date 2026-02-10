@@ -1,0 +1,121 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  overflow: hidden;
+}
+
+/* APP FRAME */
+.frame {
+  display: none;
+  width: 100vw;
+  height: 100dvh;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+/* FRAME 1 */
+#frame1 {
+  display: flex;
+  justify-content: center;
+  background: url("assets/images/strawberry-bg.png") center/cover no-repeat;
+}
+
+.vinyl {
+  width: 80vw;
+  max-width: 340px;
+  position: absolute;
+  top: 8vh;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.dog {
+  width: 42vw;
+  max-width: 160px;
+  margin-top: auto;
+  margin-bottom: 3vh;
+}
+
+.start-btn {
+  width: 48vw;
+  max-width: 180px;
+  cursor: pointer;
+  margin-bottom: 8vh;
+  transition: transform 0.2s ease;
+}
+
+.start-btn:hover {
+  transform: scale(1.08);
+}
+
+/* FRAME 2 */
+#frame2 {
+  background: #29444B;
+  padding-top: env(safe-area-inset-top);
+}
+
+/* FIXED FLOWER CANVAS */
+#flowerCanvas {
+  width: 344px;
+  height: 498px;
+  background: #6596c7;
+  border-radius: 24px;
+  margin-top: 5vh;
+}
+
+/* SONG INFO */
+.song-info {
+  width: 85%;
+  margin-top: 2vh;
+  text-align: center;
+  color: white;
+  font-family: Consolas, monospace;
+}
+
+.song-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.song-artist {
+  font-size: 13px;
+  opacity: 0.85;
+  margin-bottom: 10px;
+}
+
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#progressBar {
+  flex: 1;
+  height: 4px;
+  appearance: none;
+  background: white;
+  border-radius: 5px;
+}
+
+#progressBar::-webkit-slider-thumb {
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+}
+
+/* CONTROLS */
+.controls {
+  margin-top: 25px;
+}
+
+.control-btn {
+  width: 60px;
+  margin: 10px;
+  cursor: pointer;
+}
