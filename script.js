@@ -1,31 +1,21 @@
 // ==============================
-// FRAMES
+// FRAME NAVIGATION
 // ==============================
 const frame1 = document.getElementById("frame1");
 const frame2 = document.getElementById("frame2");
 const startBtn = document.getElementById("startBtn");
 
-// ==============================
-// AUDIO
-// ==============================
-const audio = document.getElementById("audioPlayer");
-const menuAudio = document.getElementById("menuAudio");
-
-// ==============================
-// CANVAS
-// ==============================
-const canvas = document.getElementById("flowerCanvas");
-const ctx = canvas.getContext("2d");
-
-// ==============================
-// UI
-// ==============================
-const playBtn = document.getElementById("playBtn");
-const songTitle = document.getElementById("songTitle");
-const songArtist = document.getElementById("songArtist");
-const progressBar = document.getElementById("progressBar");
-const currentTimeEl = document.getElementById("currentTime");
-const durationEl = document.getElementById("duration");
+startBtn.addEventListener("mouseover", () => {
+  startBtn.src = "assets/images/ui/button-hover 2.png";
+});
+startBtn.addEventListener("mouseout", () => {
+  startBtn.src = "assets/images/ui/button-hover 1.png";
+});
+startBtn.addEventListener("click", () => {
+  frame1.style.display = "none";
+  frame2.style.display = "flex";
+  loadSong(currentIndex);
+});
 
 // ==============================
 // SONG DATA
@@ -54,21 +44,60 @@ const songs = [
 let currentIndex = 0;
 
 // ==============================
-// FRAME TRANSITION (MOBILE SAFE)
+// AUDIO + CANVAS
 // ==============================
-startBtn.addEventListener("click", () => {
-  // unlock audio on mobile
-  menuAudio.play().catch(() => {});
+const audio = document.getElementById("audioPlayer");
+const canvas = document.getElementById("flowerCanvas");
+const ctx = canvas.getContext("2d");
+const playBtn = document.getElementById("playBtn");
 
-  setTimeout(() => {
-    menuAudio.pause();
-    menuAudio.currentTime = 0;
-  }, 150);
+// SONG TEXT ELEMENTS
+const songTitle = document.getElementById("songTitle");
+const songArtist = document.getElementById("songArtist");
+// PROGRESS BAR ELEMENTS
+const progressBar = document.getElementById("progressBar");
+const currentTimeEl = document.getElementById("currentTime");
+const durationEl = document.getElementById("duration");
 
-  frame1.style.display = "none";
-  frame2.style.display = "flex";
+function formatTime(seconds) {
+  if (isNaN(seconds) || !isFinite(seconds)) return "0:00";
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return m + ":" + (s < 10 ? "0" + s : s);
+}
 
-  loadSong(currentIndex);
+// Update duration when metadata is loaded
+audio.addEventListener("loadedmetadata", () => {
+  durationEl.textContent = formatTime(audio.duration);
+  if (progressBar) progressBar.value = 0;
+});
+
+// Update progress UI as the song plays
+audio.addEventListener("timeupdate", () => {
+  if (!audio.duration || !isFinite(audio.duration)) return;
+  const percent = (audio.currentTime / audio.duration) * 100;
+  if (progressBar) progressBar.value = percent;
+  if (currentTimeEl) currentTimeEl.textContent = formatTime(audio.currentTime);
+});
+
+// Seek when user interacts with the progress bar
+if (progressBar) {
+  progressBar.addEventListener("input", (e) => {
+    if (!audio.duration || !isFinite(audio.duration)) return;
+    const val = Number(e.target.value);
+    audio.currentTime = (val / 100) * audio.duration;
+    // Sync draw progress
+    drawProgress = Math.min(audio.currentTime / (audio.duration * DRAW_DURATION_MULTIPLIER), 1);
+    if (currentFlowerType && !isDrawing && !audio.paused) {
+      isDrawing = true;
+      animateFlower();
+    }
+  });
+}
+
+// Auto-advance on end
+audio.addEventListener("ended", () => {
+  nextSong();
 });
 
 // ==============================
@@ -88,7 +117,8 @@ function playSong() {
   audio.play();
   playBtn.src = "assets/images/ui/pause.png";
   playBtn.onclick = pauseSong;
-
+  
+  // Start or resume drawing animation
   if (currentFlowerType && !isDrawing) {
     isDrawing = true;
     animateFlower();
@@ -114,40 +144,16 @@ function prevSong() {
 }
 
 // ==============================
-// PROGRESS BAR
-// ==============================
-function formatTime(seconds) {
-  if (!isFinite(seconds)) return "0:00";
-  const m = Math.floor(seconds / 60);
-  const s = Math.floor(seconds % 60).toString().padStart(2, "0");
-  return `${m}:${s}`;
-}
-
-audio.addEventListener("loadedmetadata", () => {
-  durationEl.textContent = formatTime(audio.duration);
-  progressBar.value = 0;
-});
-
-audio.addEventListener("timeupdate", () => {
-  progressBar.value = (audio.currentTime / audio.duration) * 100;
-  currentTimeEl.textContent = formatTime(audio.currentTime);
-});
-
-progressBar.addEventListener("input", e => {
-  audio.currentTime = (e.target.value / 100) * audio.duration;
-});
-
-// ==============================
-// FLOWER ANIMATION STATE
+// ANIMATION STATE
 // ==============================
 let currentFlowerType = null;
 let drawProgress = 0;
 let isDrawing = false;
 let animationFrameId = null;
-const DRAW_DURATION_MULTIPLIER = 2.5;
+const DRAW_DURATION_MULTIPLIER = 2.5; // Drawing takes 2.5x the song duration (slower)
 
 // ==============================
-// TURTLE SYSTEM
+// TURTLE SYSTEM (PYTHON-STYLE)
 // ==============================
 let turtleX = 0;
 let turtleY = 0;
@@ -182,18 +188,24 @@ function circle(radius, extent) {
 }
 
 // ==============================
-// ANIMATION LOOP
+// ANIMATION RENDERER
 // ==============================
 function animateFlower() {
-  if (audio.paused) return;
+  // Pause animation if audio is paused
+  if (audio.paused) {
+    return;
+  }
 
+  // Wait for audio duration to be available
   if (!audio.duration || audio.duration === Infinity) {
     animationFrameId = requestAnimationFrame(animateFlower);
     return;
   }
 
+  // Calculate progress based on song playback position
   const totalDrawTime = audio.duration * DRAW_DURATION_MULTIPLIER;
-  drawProgress = Math.min(audio.currentTime / totalDrawTime, 1);
+  const elapsedDrawTime = audio.currentTime;
+  drawProgress = Math.min(elapsedDrawTime / totalDrawTime, 1);
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.save();
@@ -205,6 +217,7 @@ function animateFlower() {
 
   ctx.restore();
 
+  // Request next frame
   animationFrameId = requestAnimationFrame(animateFlower);
 }
 
@@ -212,17 +225,22 @@ function animateFlower() {
 // FLOWER ROUTER
 // ==============================
 function drawFlower(type) {
-  if (animationFrameId) cancelAnimationFrame(animationFrameId);
+  // Stop any existing animation
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
+  }
 
+  // Clear canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   currentFlowerType = type;
   drawProgress = 0;
   isDrawing = false;
+  // Animation starts when playSong() is called
 }
 
 // ==============================
-// LOTUS
+// LOTUS (ANIMATED)
 // ==============================
 function drawLotusAnimated(progress) {
   ctx.strokeStyle = "white";
@@ -234,10 +252,10 @@ function drawLotusAnimated(progress) {
   const layers = 260;
   const radius = 220;
   const scale = 0.6;
-  const layersToDraw = Math.ceil(layers * progress);
+  const layersToDrawN = Math.ceil(layers * progress);
 
-  for (let i = 0; i < layersToDraw; i++) {
-    const r = (radius - i * 0.7) * scale;
+  for (let i = 0; i < layersToDrawN; i++) {
+    let r = (radius - i * 0.7) * scale;
     if (r <= 0) break;
 
     for (let p = 0; p < petals; p++) {
@@ -250,7 +268,7 @@ function drawLotusAnimated(progress) {
 }
 
 // ==============================
-// CARNATION
+// CARNATION (ANIMATED)
 // ==============================
 function drawCarnationAnimated(progress) {
   ctx.strokeStyle = "pink";
@@ -262,11 +280,11 @@ function drawCarnationAnimated(progress) {
   const layers = 300;
   const baseRadius = 160;
   const scale = 0.7;
-  const layersToDraw = Math.ceil(layers * progress);
+  const layersToDrawN = Math.ceil(layers * progress);
 
-  for (let i = 0; i < layersToDraw; i++) {
-    const wobble = Math.random() * 4 - 2;
-    const r = (baseRadius - i * 0.45 + wobble) * scale;
+  for (let i = 0; i < layersToDrawN; i++) {
+    let wobble = Math.random() * 4 - 2;
+    let r = (baseRadius - i * 0.45 + wobble) * scale;
     if (r <= 0) break;
 
     for (let p = 0; p < petals; p++) {
@@ -279,7 +297,7 @@ function drawCarnationAnimated(progress) {
 }
 
 // ==============================
-// CAMELLIA
+// CAMELLIA (ANIMATED)
 // ==============================
 function drawCameliaAnimated(progress) {
   ctx.strokeStyle = "pink";
@@ -291,10 +309,10 @@ function drawCameliaAnimated(progress) {
   const layers = 280;
   const baseRadius = 210;
   const scale = 0.6;
-  const layersToDraw = Math.ceil(layers * progress);
+  const layersToDrawN = Math.ceil(layers * progress);
 
-  for (let i = 0; i < layersToDraw; i++) {
-    const r = (baseRadius - i * 0.6) * scale;
+  for (let i = 0; i < layersToDrawN; i++) {
+    let r = (baseRadius - i * 0.6) * scale;
     if (r <= 0) break;
 
     left(i * 0.6);
