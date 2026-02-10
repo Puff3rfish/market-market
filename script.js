@@ -1,47 +1,22 @@
 // ==============================
-// ELEMENTS
+// FRAME NAVIGATION
 // ==============================
 const frame1 = document.getElementById("frame1");
 const frame2 = document.getElementById("frame2");
 const startBtn = document.getElementById("startBtn");
-
-const audio = document.getElementById("audioPlayer");
 const menuAudio = document.getElementById("menuAudio");
-const canvas = document.getElementById("flowerCanvas");
-const ctx = canvas.getContext("2d");
 
-const playBtn = document.getElementById("playBtn");
-const songTitle = document.getElementById("songTitle");
-const songArtist = document.getElementById("songArtist");
-const progressBar = document.getElementById("progressBar");
-const currentTimeEl = document.getElementById("currentTime");
-const durationEl = document.getElementById("duration");
-
-// ==============================
-// FRAME 1 MENU AUDIO (WORKS ON MOBILE)
-// ==============================
 let menuAudioPlayed = false;
 
-function playMenuAudio() {
-  if (menuAudioPlayed) return;
-  menuAudio.play().catch(() => {
-    console.log("Menu audio blocked on mobile. Wait for next gesture.");
-  });
-  menuAudioPlayed = true;
-}
+// Play menu audio on first tap anywhere
+document.body.addEventListener("pointerdown", () => {
+  if (!menuAudioPlayed) {
+    menuAudio.play().catch(err => console.log("Tap again to start music"));
+    menuAudioPlayed = true;
+  }
+}, { once: true });
 
-// Play menu audio on first user tap
-frame1.addEventListener('pointerdown', playMenuAudio, { once: true });
-
-// Stop menu audio
-function stopMenuAudio() {
-  menuAudio.pause();
-  menuAudio.currentTime = 0;
-}
-
-// ==============================
-// FRAME NAVIGATION
-// ==============================
+// Start button
 startBtn.addEventListener("mouseover", () => {
   startBtn.src = "assets/images/ui/button-hover 2.png";
 });
@@ -55,6 +30,14 @@ startBtn.addEventListener("click", () => {
   loadSong(currentIndex);
 });
 
+// Stop menu audio
+function stopMenuAudio() {
+  if (!menuAudio.paused) {
+    menuAudio.pause();
+    menuAudio.currentTime = 0;
+  }
+}
+
 // ==============================
 // SONG DATA
 // ==============================
@@ -67,8 +50,22 @@ const songs = [
 let currentIndex = 0;
 
 // ==============================
-// SONG + PROGRESS
+// AUDIO + CANVAS
 // ==============================
+const audio = document.getElementById("audioPlayer");
+const canvas = document.getElementById("flowerCanvas");
+const ctx = canvas.getContext("2d");
+const playBtn = document.getElementById("playBtn");
+
+// SONG TEXT ELEMENTS
+const songTitle = document.getElementById("songTitle");
+const songArtist = document.getElementById("songArtist");
+
+// PROGRESS BAR ELEMENTS
+const progressBar = document.getElementById("progressBar");
+const currentTimeEl = document.getElementById("currentTime");
+const durationEl = document.getElementById("duration");
+
 function formatTime(seconds) {
   if (isNaN(seconds) || !isFinite(seconds)) return "0:00";
   const m = Math.floor(seconds / 60);
@@ -76,11 +73,13 @@ function formatTime(seconds) {
   return m + ":" + (s < 10 ? "0" + s : s);
 }
 
+// Update duration
 audio.addEventListener("loadedmetadata", () => {
   durationEl.textContent = formatTime(audio.duration);
   progressBar.value = 0;
 });
 
+// Update progress
 audio.addEventListener("timeupdate", () => {
   if (!audio.duration || !isFinite(audio.duration)) return;
   const percent = (audio.currentTime / audio.duration) * 100;
@@ -88,20 +87,15 @@ audio.addEventListener("timeupdate", () => {
   currentTimeEl.textContent = formatTime(audio.currentTime);
 });
 
+// Seek
 progressBar.addEventListener("input", (e) => {
   if (!audio.duration || !isFinite(audio.duration)) return;
   const val = Number(e.target.value);
   audio.currentTime = (val / 100) * audio.duration;
-  drawProgress = Math.min(audio.currentTime / (audio.duration * DRAW_DURATION_MULTIPLIER), 1);
-  if (currentFlowerType && !isDrawing && !audio.paused) {
-    isDrawing = true;
-    animateFlower();
-  }
 });
 
-audio.addEventListener("ended", () => {
-  nextSong();
-});
+// Auto-next
+audio.addEventListener("ended", nextSong);
 
 // ==============================
 // PLAYER CONTROLS
@@ -151,26 +145,16 @@ let isDrawing = false;
 let animationFrameId = null;
 const DRAW_DURATION_MULTIPLIER = 2.5;
 
-let turtleX = 0;
-let turtleY = 0;
-let turtleAngle = 0;
-
-function resetTurtle() {
-  turtleX = 0;
-  turtleY = 0;
-  turtleAngle = 0;
-}
-
+// Turtle system
+let turtleX = 0, turtleY = 0, turtleAngle = 0;
+function resetTurtle() { turtleX = 0; turtleY = 0; turtleAngle = 0; }
 function left(deg) { turtleAngle += deg * Math.PI / 180; }
-
 function circle(radius, extent) {
   const steps = Math.max(12, Math.abs(extent));
   const stepAngle = (extent * Math.PI / 180) / steps;
   const stepLength = (2 * Math.PI * radius) / 360;
-
   ctx.beginPath();
   ctx.moveTo(turtleX, turtleY);
-
   for (let i = 0; i < steps; i++) {
     turtleAngle += stepAngle;
     turtleX += Math.cos(turtleAngle) * stepLength;
@@ -180,13 +164,13 @@ function circle(radius, extent) {
   ctx.stroke();
 }
 
+// Animate flower
 function animateFlower() {
   if (audio.paused) return;
   if (!audio.duration || audio.duration === Infinity) {
     animationFrameId = requestAnimationFrame(animateFlower);
     return;
   }
-
   const totalDrawTime = audio.duration * DRAW_DURATION_MULTIPLIER;
   const elapsedDrawTime = audio.currentTime;
   drawProgress = Math.min(elapsedDrawTime / totalDrawTime, 1);
@@ -203,6 +187,7 @@ function animateFlower() {
   animationFrameId = requestAnimationFrame(animateFlower);
 }
 
+// Flower router
 function drawFlower(type) {
   if (animationFrameId) cancelAnimationFrame(animationFrameId);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -211,79 +196,34 @@ function drawFlower(type) {
   isDrawing = false;
 }
 
-// ------------------------------
-// LOTUS
+// Lotus
 function drawLotusAnimated(progress) {
-  ctx.strokeStyle = "white";
-  ctx.lineWidth = 1;
-  resetTurtle();
-
-  const petals = 8;
-  const layers = 260;
-  const radius = 220;
-  const scale = 0.6;
-  const layersToDrawN = Math.ceil(layers * progress);
-
-  for (let i = 0; i < layersToDrawN; i++) {
-    let r = (radius - i * 0.7) * scale;
-    if (r <= 0) break;
-    for (let p = 0; p < petals; p++) {
-      circle(r, 60);
-      left(120);
-      circle(r, 60);
-      left(360 / petals);
-    }
+  ctx.strokeStyle = "white"; ctx.lineWidth = 1; resetTurtle();
+  const petals=8,layers=260,radius=220,scale=0.6,layersToDrawN=Math.ceil(layers*progress);
+  for(let i=0;i<layersToDrawN;i++){
+    let r=(radius-i*0.7)*scale; if(r<=0) break;
+    for(let p=0;p<petals;p++){circle(r,60); left(120); circle(r,60); left(360/petals);}
   }
 }
 
-// ------------------------------
-// CARNATION
+// Carnation
 function drawCarnationAnimated(progress) {
-  ctx.strokeStyle = "pink";
-  ctx.lineWidth = 1;
-  resetTurtle();
-
-  const petals = 12;
-  const layers = 300;
-  const baseRadius = 160;
-  const scale = 0.7;
-  const layersToDrawN = Math.ceil(layers * progress);
-
-  for (let i = 0; i < layersToDrawN; i++) {
-    let wobble = Math.random() * 4 - 2;
-    let r = (baseRadius - i * 0.45 + wobble) * scale;
-    if (r <= 0) break;
-    for (let p = 0; p < petals; p++) {
-      circle(r, 70);
-      left(110);
-      circle(r, 70);
-      left(360 / petals);
-    }
+  ctx.strokeStyle = "pink"; ctx.lineWidth = 1; resetTurtle();
+  const petals=12,layers=300,baseRadius=160,scale=0.7,layersToDrawN=Math.ceil(layers*progress);
+  for(let i=0;i<layersToDrawN;i++){
+    let wobble=Math.random()*4-2;
+    let r=(baseRadius-i*0.45+wobble)*scale; if(r<=0) break;
+    for(let p=0;p<petals;p++){circle(r,70); left(110); circle(r,70); left(360/petals);}
   }
 }
 
-// ------------------------------
-// CAMELLIA
-function drawCameliaAnimated(progress) {
-  ctx.strokeStyle = "pink";
-  ctx.lineWidth = 1;
-  resetTurtle();
-
-  const petals = 7;
-  const layers = 280;
-  const baseRadius = 210;
-  const scale = 0.6;
-  const layersToDrawN = Math.ceil(layers * progress);
-
-  for (let i = 0; i < layersToDrawN; i++) {
-    let r = (baseRadius - i * 0.6) * scale;
-    if (r <= 0) break;
-    left(i * 0.6);
-    for (let p = 0; p < petals; p++) {
-      circle(r, 80);
-      left(100);
-      circle(r, 80);
-      left(360 / petals);
-    }
+// Camellia
+function drawCameliaAnimated(progress){
+  ctx.strokeStyle="pink"; ctx.lineWidth=1; resetTurtle();
+  const petals=7,layers=280,baseRadius=210,scale=0.6,layersToDrawN=Math.ceil(layers*progress);
+  for(let i=0;i<layersToDrawN;i++){
+    let r=(baseRadius-i*0.6)*scale; if(r<=0) break;
+    left(i*0.6);
+    for(let p=0;p<petals;p++){circle(r,80); left(100); circle(r,80); left(360/petals);}
   }
 }
