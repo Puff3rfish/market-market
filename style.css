@@ -1,0 +1,183 @@
+
+body {
+  margin: 0;
+  background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.frame {
+  display: none;
+  width: 390px;
+  height: 844px;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* FRAME 1 */
+#frame1 {
+  display: flex;
+  justify-content: center;
+  background: url("assets/images/strawberry-bg.png") center/cover no-repeat;
+}
+
+.dog {
+  width: 160px;
+  margin-bottom: 20px;
+}
+
+.start-btn {
+  width: 180px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.start-btn:hover {
+  transform: scale(1.08);
+}
+
+/* Vinyl image on Frame 1 */
+.vinyl {
+  width: 344px;
+  height: 165px;
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: block;
+}
+
+/* FRAME 2 */
+#frame2 {
+  background: #29444B;
+  justify-content: flex-start;
+  padding-top: 40px;
+}
+
+/* FRAME 1 - VINYL + NOW PLAYING */
+.vinyl-container {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.vinyl-bg {
+  width: 260px;
+  height: 260px;
+  object-fit: contain;
+  display: block;
+}
+.vinyl-plate {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: transform 0.3s linear;
+}
+.vinyl-plate.spinning {
+  animation: spin 4s linear infinite;
+}
+@keyframes spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.now-playing {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  color: white;
+  font-family: Consolas, monospace;
+}
+.now-label {
+  font-size: 12px;
+  opacity: 0.9;
+  margin-bottom: 2px;
+}
+.track-line.small {
+  font-size: 13px;
+  font-weight: 400;
+}
+.track-line.bold {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+#flowerCanvas {
+  background: #6596c7;
+  border-radius: 25px;
+  margin-top: 50px;   /* 🔼 move DOWN */
+  margin-bottom: 10px; /* 🔽 move UP */
+}
+
+
+/* 🎵 SONG INFO */
+.song-info {
+  width: 85%;
+  margin-top: 18px;
+  text-align: center;
+  color: white;
+  font-family: Consolas, monospace;
+}
+
+.song-title {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.song-artist {
+  font-size: 13px;
+  opacity: 0.85;
+  margin-bottom: 10px;
+}
+
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#progressBar {
+  flex: 1;
+  appearance: none;
+  height: 4px;
+  background: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#progressBar::-webkit-slider-thumb {
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+}
+
+/* CONTROLS */
+.controls {
+  margin-top: 25px;
+}
+
+.control-btn {
+  width: 60px;
+  margin: 10px;
+  cursor: pointer;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.control-btn:hover {
+  transform: scale(1.15);
+  filter: brightness(1.2);
+}
