@@ -43,7 +43,7 @@ html, body {
 }
 
 /* ==============================
-   CHARACTER WRAPPER (UPDATED)
+   CHARACTER WRAPPER
 ============================== */
 .character-wrapper {
   position: relative;
@@ -70,15 +70,15 @@ html, body {
   transform: scale(0.92);
 }
 
-/* Rabbit wants overlay (UPDATED) */
+/* Rabbit wants overlay */
 .rabbit-wants {
   position: absolute;
 
   width: 300px;
   height: 300px;
 
-  bottom: 100%;              /* position above dog */
-  margin-bottom: -100px;       /* exact spacing */
+  bottom: 100%;              
+  margin-bottom: -130px;       
 
   left: 50%;
   transform: translateX(-50%);
