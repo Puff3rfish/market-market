@@ -1,4 +1,6 @@
-/* ============================== GLOBAL RESET ============================== */
+/* ==============================
+   GLOBAL RESET
+============================== */
 html, body {
   margin: 0;
   padding: 0;
@@ -9,7 +11,9 @@ html, body {
   font-family: Consolas, monospace;
 }
 
-/* ============================== FRAME ============================== */
+/* ==============================
+   APP FRAME
+============================== */
 .frame {
   display: none;
   width: 100vw;
@@ -19,13 +23,16 @@ html, body {
   position: relative;
 }
 
-/* ============================== FRAME 1 ============================== */
+/* ==============================
+   FRAME 1 (MENU SCREEN)
+============================== */
 #frame1 {
   display: flex;
   justify-content: center;
   background: url("assets/images/strawberry-bg.png") center/cover no-repeat;
 }
 
+/* Vinyl record */
 .vinyl {
   width: 80vw;
   max-width: 340px;
@@ -35,7 +42,9 @@ html, body {
   transform: translateX(-50%);
 }
 
-/* CHARACTER */
+/* ==============================
+   CHARACTER WRAPPER
+============================== */
 .character-wrapper {
   position: relative;
   display: flex;
@@ -45,30 +54,40 @@ html, body {
   margin-bottom: 3vh;
 }
 
+/* Strawberry character */
 .dog {
   width: 42vw;
   max-width: 160px;
   cursor: pointer;
-  transition: transform 0.25s ease;
+
+  transition: 
+    transform 0.25s ease,
+    opacity 0.3s ease;
 }
 
+/* Click feedback animation */
 .dog:active {
   transform: scale(0.92);
 }
 
+/* Rabbit wants overlay */
 .rabbit-wants {
   position: absolute;
-  width: 70vw;
-  max-width: 300px;
-  height: auto;
-  bottom: 100%;
-  margin-bottom: -130px;
+
+  width: 300px;
+  height: 300px;
+
+  bottom: 100%;              
+  margin-bottom: -130px;       
+
   left: 50%;
   transform: translateX(-50%);
+
   pointer-events: none;
+  transition: opacity 0.3s ease;
 }
 
-/* START BUTTON */
+/* Start Button */
 .start-btn {
   width: 48vw;
   max-width: 180px;
@@ -81,7 +100,9 @@ html, body {
   transform: scale(1.08);
 }
 
-/* ============================== FRAME 2 ============================== */
+/* ==============================
+   FRAME 2 (PLAYER SCREEN)
+============================== */
 #frame2 {
   background: #29444B;
   padding-top: env(safe-area-inset-top);
@@ -90,29 +111,24 @@ html, body {
   align-items: center;
 }
 
-/* RESPONSIVE CANVAS */
+/* ==============================
+   FLOWER CANVAS
+============================== */
 #flowerCanvas {
-  width: 90vw;
-  max-width: 420px;
-  aspect-ratio: 344 / 498;
+  width: 344px;
+  height: 498px;
   background: #6596c7;
   border-radius: 24px;
+
   margin-top: 5vh;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+
+  box-shadow: 
+    0 10px 25px rgba(0,0,0,0.25);
 }
 
-/* RESPONSIVE VIDEO */
-#museoVideo {
-  width: 90vw;
-  max-width: 420px;
-  aspect-ratio: 344 / 498;
-  display: none;
-  border-radius: 24px;
-  margin-top: 5vh;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-}
-
-/* SONG INFO */
+/* ==============================
+   SONG INFO
+============================== */
 .song-info {
   width: 85%;
   margin-top: 2vh;
@@ -123,6 +139,7 @@ html, body {
 .song-title {
   font-size: 20px;
   font-weight: bold;
+  letter-spacing: 1px;
 }
 
 .song-artist {
@@ -131,7 +148,9 @@ html, body {
   margin-bottom: 10px;
 }
 
-/* PROGRESS BAR */
+/* ==============================
+   PROGRESS BAR
+============================== */
 .progress-container {
   display: flex;
   align-items: center;
@@ -144,6 +163,7 @@ html, body {
   appearance: none;
   background: white;
   border-radius: 5px;
+  cursor: pointer;
 }
 
 #progressBar::-webkit-slider-thumb {
@@ -152,6 +172,7 @@ html, body {
   height: 10px;
   background: white;
   border-radius: 50%;
+  cursor: pointer;
 }
 
 #progressBar::-moz-range-thumb {
@@ -160,16 +181,18 @@ html, body {
   background: white;
   border-radius: 50%;
   border: none;
+  cursor: pointer;
 }
 
-/* CONTROLS */
+/* ==============================
+   PLAYER CONTROLS
+============================== */
 .controls {
   margin-top: 25px;
 }
 
 .control-btn {
-  width: 15vw;
-  max-width: 70px;
+  width: 60px;
   margin: 10px;
   cursor: pointer;
   transition: transform 0.2s ease;
