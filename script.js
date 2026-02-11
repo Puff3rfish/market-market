@@ -5,7 +5,7 @@ const frame1 = document.getElementById("frame1");
 const frame2 = document.getElementById("frame2");
 const startBtn = document.getElementById("startBtn");
 const characterImg = document.getElementById("characterImg");
-const rabbitWants = document.getElementById("rabbitWants"); // NEW
+const rabbitWants = document.getElementById("rabbitWants");
 const menuAudio = document.getElementById("menuAudio");
 
 let menuAudioPlayed = false;
@@ -13,16 +13,11 @@ let menuAudioPlayed = false;
 // When strawberry dog is clicked
 characterImg.addEventListener("click", () => {
 
-  // Hide rabbit wants gif (NEW)
-  if (rabbitWants) {
-    rabbitWants.style.opacity = "0";
-    setTimeout(() => {
-      rabbitWants.style.display = "none";
-    }, 300);
-  }
-
   // Swap PNG → GIF
   characterImg.src = "assets/images/strawberry rabbit.gif";
+
+  // Hide the rabbit wants GIF
+  if (rabbitWants) rabbitWants.style.display = "none";
 
   // Play menu music only once
   if (!menuAudioPlayed) {
@@ -81,6 +76,7 @@ let currentIndex = 0;
 // ==============================
 const audio = document.getElementById("audioPlayer");
 const canvas = document.getElementById("flowerCanvas");
+const museoVideo = document.getElementById("museoVideo");
 const ctx = canvas.getContext("2d");
 const playBtn = document.getElementById("playBtn");
 
@@ -137,7 +133,24 @@ function loadSong(index) {
   audio.src = song.file;
   songTitle.textContent = song.title;
   songArtist.textContent = song.artist;
-  drawFlower(song.flower);
+
+  // FLOWER / VIDEO SWITCH
+  if (song.title === "Museo") {
+    canvas.style.display = "none";
+    museoVideo.style.display = "block";
+    museoVideo.play();
+  } else {
+    canvas.style.display = "block";
+    museoVideo.style.display = "none";
+    museoVideo.pause();
+    drawFlower(song.flower);
+  }
+
+  if (song.title !== "Museo") {
+    currentFlowerType = song.flower;
+    drawProgress = 0;
+    isDrawing = false;
+  }
 }
 
 function playSong() {
