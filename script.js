@@ -4,13 +4,27 @@
 const frame1 = document.getElementById("frame1");
 const frame2 = document.getElementById("frame2");
 const startBtn = document.getElementById("startBtn");
-const dogImg = document.querySelector(".dog");
+const characterImg = document.getElementById("characterImg");
+const rabbitWants = document.getElementById("rabbitWants"); // NEW
 const menuAudio = document.getElementById("menuAudio");
 
 let menuAudioPlayed = false;
 
-// Play menu music when dog is clicked
-dogImg.addEventListener("click", () => {
+// When strawberry dog is clicked
+characterImg.addEventListener("click", () => {
+
+  // Hide rabbit wants gif (NEW)
+  if (rabbitWants) {
+    rabbitWants.style.opacity = "0";
+    setTimeout(() => {
+      rabbitWants.style.display = "none";
+    }, 300);
+  }
+
+  // Swap PNG → GIF
+  characterImg.src = "assets/images/strawberry rabbit.gif";
+
+  // Play menu music only once
   if (!menuAudioPlayed) {
     menuAudio.play().catch(err => {
       console.log("Tap again to start music");
@@ -34,6 +48,7 @@ startBtn.addEventListener("click", () => {
   menuAudio.pause();
   loadSong(currentIndex);
 });
+
 
 // ==============================
 // SONG DATA
