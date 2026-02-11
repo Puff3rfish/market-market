@@ -80,6 +80,21 @@ const museoVideo = document.getElementById("museoVideo");
 const ctx = canvas.getContext("2d");
 const playBtn = document.getElementById("playBtn");
 
+// ==============================
+// CANVAS RESIZE (NO DISTORTION)
+// ==============================
+function resizeCanvas() {
+  const rect = canvas.getBoundingClientRect();
+
+  canvas.width = rect.width;
+  canvas.height = rect.height;
+
+  ctx.setTransform(1, 0, 0, 1, 0, 0); // reset scale
+}
+
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
 // SONG TEXT ELEMENTS
 const songTitle = document.getElementById("songTitle");
 const songArtist = document.getElementById("songArtist");
@@ -323,3 +338,4 @@ function drawCameliaAnimated(progress) {
     }
   }
 }
+
