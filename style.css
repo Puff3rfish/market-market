@@ -104,7 +104,7 @@ html, body {
    FRAME 2 (PLAYER SCREEN)
 ============================== */
 #frame2 {
-  background: #6596c7;
+  background: #29444B;
   padding-top: env(safe-area-inset-top);
   display: flex;
   flex-direction: column;
@@ -200,5 +200,6 @@ html, body {
 .control-btn:active {
   transform: scale(0.9);
 }
+
 
 
