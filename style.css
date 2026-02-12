@@ -104,26 +104,28 @@ html, body {
    FRAME 2 (PLAYER SCREEN)
 ============================== */
 #frame2 {
-  background: #29444B;
+  background: url("assets/images/frame 2 bg.gif") center center / cover no-repeat;
   padding-top: env(safe-area-inset-top);
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+
 /* ==============================
    FLOWER CANVAS
 ============================== */
 #flowerCanvas {
-  width: 90vw;
-  max-width: 344px;
-  aspect-ratio: 344 / 498;
+  width: 344px;
+  height: 498px;
   background: #6596c7;
   border-radius: 24px;
-  margin-top: 5vh;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-}
 
+  margin-top: 5vh;
+
+  box-shadow: 
+    0 10px 25px rgba(0,0,0,0.25);
+}
 
 /* ==============================
    SONG INFO
@@ -200,6 +202,3 @@ html, body {
 .control-btn:active {
   transform: scale(0.9);
 }
-
-
-
