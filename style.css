@@ -29,7 +29,7 @@ html, body {
 #frame1 {
   display: flex;
   justify-content: center;
-  background: url("assets/images/strawberry-bg.png") center/cover no-repeat;
+  background: url("assets/images/strawberry-bg.gif") center/cover no-repeat;
 }
 
 /* Vinyl record */
@@ -202,3 +202,4 @@ html, body {
 .control-btn:active {
   transform: scale(0.9);
 }
+
