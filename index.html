@@ -2,10 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-
   <meta name="viewport"
         content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no">
-
   <title>dangwa</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -13,7 +11,7 @@
 
 <!-- FRAME 1 -->
 <div id="frame1" class="frame">
-  <img src="assets/images/ui/vinyl.png" class="vinyl">
+  <img id="vinylImg" src="assets/images/ui/vinyl.png" class="vinyl" style="display:none;">
 
   <!-- CHARACTER WRAPPER -->
   <div class="character-wrapper">
@@ -32,8 +30,10 @@
 
 <!-- FRAME 2 -->
 <div id="frame2" class="frame">
-  <canvas id="flowerCanvas"></canvas>
+  <!-- BACK LINK -->
+  <a href="#" id="backLink" class="back-link">Back</a>
 
+  <canvas id="flowerCanvas" width="344" height="498"></canvas>
 
   <!-- Museo Video -->
   <video id="museoVideo" width="344" height="498" autoplay loop muted style="display:none; border-radius:24px; margin-top:5vh; box-shadow:0 10px 25px rgba(0,0,0,0.25);">
@@ -68,4 +68,3 @@
 <script src="script.js"></script>
 </body>
 </html>
-
