@@ -8,22 +8,25 @@ const characterImg = document.getElementById("characterImg");
 const rabbitWants = document.getElementById("rabbitWants");
 const menuAudio = document.getElementById("menuAudio");
 const backLink = document.getElementById("backLink");
+const vinylImg = document.getElementById("vinylImg"); // ✅ RESTORED
 
 let menuAudioPlayed = false;
 
 characterImg.addEventListener("click", () => {
   characterImg.src = "assets/images/strawberry rabbit.gif";
+
   if (rabbitWants) rabbitWants.style.display = "none";
 
-    // SHOW VINYL WHEN DOG IS CLICKED
+  // ✅ VINYL FADE IN RESTORED
   if (vinylImg) {
     vinylImg.style.display = "block";
     vinylImg.style.opacity = 0;
-    // Fade in animation
+
     let opacity = 0;
     const fadeIn = setInterval(() => {
       opacity += 0.05;
       vinylImg.style.opacity = opacity;
+
       if (opacity >= 1) clearInterval(fadeIn);
     }, 25);
   }
@@ -45,15 +48,11 @@ startBtn.addEventListener("mouseout", () => {
 startBtn.addEventListener("click", () => {
   frame1.style.display = "none";
   frame2.style.display = "flex";
-
-  // Pause menu audio
   menuAudio.pause();
-
   loadSong(currentIndex);
   playSong();
 });
 
-// BACK BUTTON
 backLink.addEventListener("click", () => {
   audio.pause();
   museoVideo.pause();
@@ -64,7 +63,6 @@ backLink.addEventListener("click", () => {
   frame2.style.display = "none";
   frame1.style.display = "flex";
 
-  // Resume menu audio from where it left off
   if (menuAudio.paused) menuAudio.play().catch(() => {});
 });
 
@@ -130,7 +128,6 @@ audio.addEventListener("timeupdate", () => {
 });
 
 audio.addEventListener("ended", () => {
-  // Go to next song in playlist (loops back to first song)
   currentIndex = (currentIndex + 1) % songs.length;
   loadSong(currentIndex);
   playSong();
@@ -140,6 +137,7 @@ progressBar.addEventListener("input", (e) => {
   if (!audio.duration) return;
   const val = Number(e.target.value);
   audio.currentTime = (val / 100) * audio.duration;
+
   if (songs[currentIndex].title === "Museo") {
     museoVideo.currentTime = audio.currentTime;
   }
@@ -153,6 +151,7 @@ function loadSong(index) {
     cancelAnimationFrame(animationFrameId);
     animationFrameId = null;
   }
+
   isDrawing = false;
   drawProgress = 0;
 
@@ -189,8 +188,6 @@ function playSong() {
   playBtn.onclick = pauseSong;
 
   if (songs[currentIndex].title === "Museo") {
-    museoVideo.style.display = "block";
-    canvas.style.display = "none";
     museoVideo.currentTime = audio.currentTime;
     museoVideo.play();
   } else if (currentFlowerType && !isDrawing) {
@@ -239,14 +236,17 @@ function circle(radius, extent) {
   const steps = Math.max(12, Math.abs(extent));
   const stepAngle = (extent * Math.PI / 180) / steps;
   const stepLength = (2 * Math.PI * radius) / 360;
+
   ctx.beginPath();
   ctx.moveTo(turtleX, turtleY);
+
   for (let i = 0; i < steps; i++) {
     turtleAngle += stepAngle;
     turtleX += Math.cos(turtleAngle) * stepLength;
     turtleY += Math.sin(turtleAngle) * stepLength;
     ctx.lineTo(turtleX, turtleY);
   }
+
   ctx.stroke();
 }
 
@@ -255,6 +255,12 @@ function circle(radius, extent) {
 // ==============================
 function animateFlower() {
   if (audio.paused || !currentFlowerType) return;
+
+  if (!audio.duration || audio.duration === Infinity) {
+    animationFrameId = requestAnimationFrame(animateFlower);
+    return;
+  }
+
   const totalDrawTime = audio.duration * DRAW_DURATION_MULTIPLIER;
   drawProgress = Math.min(audio.currentTime / totalDrawTime, 1);
 
@@ -277,8 +283,10 @@ function drawLotusAnimated(progress) {
   ctx.strokeStyle = "white";
   ctx.lineWidth = 1;
   resetTurtle();
+
   const petals = 8, layers = 260, radius = 220, scale = 0.6;
   const layersToDrawN = Math.ceil(layers * progress);
+
   for (let i = 0; i < layersToDrawN; i++) {
     let r = (radius - i * 0.7) * scale;
     if (r <= 0) break;
@@ -295,10 +303,13 @@ function drawCarnationAnimated(progress) {
   ctx.strokeStyle = "pink";
   ctx.lineWidth = 1;
   resetTurtle();
+
   const petals = 12, layers = 300, baseRadius = 160, scale = 0.7;
   const layersToDrawN = Math.ceil(layers * progress);
+
   for (let i = 0; i < layersToDrawN; i++) {
-    let r = (baseRadius - i * 0.45) * scale;
+    let wobble = Math.random() * 4 - 2;
+    let r = (baseRadius - i * 0.45 + wobble) * scale;
     if (r <= 0) break;
     for (let p = 0; p < petals; p++) {
       circle(r, 70);
@@ -313,11 +324,16 @@ function drawCamelliaAnimated(progress) {
   ctx.strokeStyle = "pink";
   ctx.lineWidth = 1;
   resetTurtle();
+
   const petals = 7, layers = 280, baseRadius = 210, scale = 0.6;
   const layersToDrawN = Math.ceil(layers * progress);
+
   for (let i = 0; i < layersToDrawN; i++) {
     let r = (baseRadius - i * 0.6) * scale;
     if (r <= 0) break;
+
+    left(i * 0.6);
+
     for (let p = 0; p < petals; p++) {
       circle(r, 80);
       left(100);
